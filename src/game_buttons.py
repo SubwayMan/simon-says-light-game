@@ -9,8 +9,10 @@ class Simon_Button(Fl_Button):
 
         Fl_Button.__init__(self, x, y, rad*2, rad*2)
         self.box(FL_OVAL_BOX)
-        self.sprite = spr
         self.down_box(FL_OVAL_BOX)
+        self.sprite = Fl_PNG_Image(spr)
+        self.image(self.sprite.copy(rad*2, rad*2))
+        
         self.callback(self.click_cb)
         self.rad = rad
 
@@ -35,7 +37,7 @@ if __name__ == "__main__":
     win.begin()
     x = os.path.join(os.getcwd(), "..", "assets", "colorbuttons.png")
     
-    b = Simon_Button(0, 0, 200, x)
+    b = Simon_Button(0, 0, 250, x)
     win.end()
     win.show()
     Fl.run()
