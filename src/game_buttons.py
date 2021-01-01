@@ -27,18 +27,20 @@ class Simon_Button(Fl_Button):
         crad = math.pi * math.pow(self.rad, 2)
         mdist = math.pow(cx, 2) + math.pow(cy, 2)
         print(math.sqrt(mdist))
-        if math.sqrt(mdist) > self.rad:
+        if not 87 <= math.sqrt(mdist) < self.rad-30:
             print("exit")
             return None
 
-        if mx < self.rad and my <= self.rad:
+        if mx < self.rad-10 and my < self.rad-10:
             self.chcol("greenlight.png")
-        elif mx >= self.rad and my < self.rad:
+        elif mx > self.rad+10 and my < self.rad-10:
             self.chcol("redlight.png")
-        elif mx > self.rad and my >= self.rad:
+        elif mx > self.rad+10 and my > self.rad+10:
             self.chcol("bluelight.png")
-        elif mx <= self.rad and my > self.rad:
+        elif mx < self.rad-10 and my > self.rad+10:
             self.chcol("yellight.png")
+        else:
+            print("midbar debug")
 
     def chcol(self, spr):
 
