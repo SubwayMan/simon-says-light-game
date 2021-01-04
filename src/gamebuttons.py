@@ -40,7 +40,7 @@ class Simon_Button(Fl_Button):
         elif mx < self.rad-10 and my > self.rad+10:
             self.chcol("yellight.png")
         else:
-            print("midbar debug")
+            print("midbar clicked")
 
     def chcol(self, spr):
 

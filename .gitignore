@@ -1,3 +1,4 @@
 SimonSays.pyproj
 SimonSays.sln
 .vs/
+src/__pycache__
