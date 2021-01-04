@@ -23,31 +23,44 @@ class Simon_Button(Fl_Button):
         mx, my = Fl.event_x(), Fl.event_y()
         cx = mx - self.rad
         cy = my - self.rad
-        print(cx, cy)
         crad = math.pi * math.pow(self.rad, 2)
         mdist = math.pow(cx, 2) + math.pow(cy, 2)
-        print(math.sqrt(mdist))
         if not 87 <= math.sqrt(mdist) < self.rad-30:
             print("exit")
             return None
 
         if mx < self.rad-10 and my < self.rad-10:
-            self.chcol("greenlight.png")
+            self.chcol("G")
         elif mx > self.rad+10 and my < self.rad-10:
-            self.chcol("redlight.png")
+            self.chcol("R")
         elif mx > self.rad+10 and my > self.rad+10:
-            self.chcol("bluelight.png")
+            self.chcol("B")
         elif mx < self.rad-10 and my > self.rad+10:
-            self.chcol("yellight.png")
+            self.chcol("Y")
         else:
-            print("midbar clicked")
-
-    def chcol(self, spr):
-
-        self.sprite = Fl_PNG_Image(os.path.join(self.spritedir, spr))
+            return None
+        
+        self.deactivate()
+        Fl.repeat_timeout(0.5, self.activate())
+        
+    def chcol(self, c):
+        
+        if c == "R":
+            pic = "redlight.png"
+        elif c == "B":
+            pic = "bluelight.png"
+        elif c == "Y":
+            pic = "yellight.png"
+        elif c == "G":
+            pic = "greenlight.png"
+        self.sprite = Fl_PNG_Image(c)
         self.image(self.sprite.copy(self.rad*2, self.rad*2))
         self.redraw()
+        Fl.repeat_timeout(0.5, self.image(Fl_PNG_Image(os.path.join(self.spritedir, "alloff.png"))))
+        
+        
 
+    
 
 if __name__ == "__main__":
 
