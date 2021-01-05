@@ -63,6 +63,11 @@ class Simon_Button(Fl_Button):
         self.image(Fl_PNG_Image(os.path.join(self.spritedir, "alloff.png")).copy(self.rad*2, self.rad*2))
 
     
+class redbutton(Fl_Button):
+
+    def __init__(self, x, y, w, h, cb):
+       
+        Fl_Button.__init__(self, x, y, w, h)
 
 if __name__ == "__main__":
 
