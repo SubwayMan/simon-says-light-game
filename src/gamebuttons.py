@@ -25,8 +25,8 @@ class Simon_Button(Fl_Button):
         cy = my - self.rad
         crad = math.pi * math.pow(self.rad, 2)
         mdist = math.pow(cx, 2) + math.pow(cy, 2)
+
         if not 87 <= math.sqrt(mdist) < self.rad-30:
-            print("exit")
             return None
 
         if mx < self.rad-10 and my < self.rad-10:
@@ -41,7 +41,7 @@ class Simon_Button(Fl_Button):
             return None
         
         self.deactivate()
-        Fl.repeat_timeout(0.5, self.activate())
+        Fl.repeat_timeout(0.5, self.activate)
         
     def chcol(self, c):
         
@@ -53,12 +53,14 @@ class Simon_Button(Fl_Button):
             pic = "yellight.png"
         elif c == "G":
             pic = "greenlight.png"
-        self.sprite = Fl_PNG_Image(c)
+
+        self.sprite = Fl_PNG_Image(os.path.join(self.spritedir, pic))
         self.image(self.sprite.copy(self.rad*2, self.rad*2))
         self.redraw()
-        Fl.repeat_timeout(0.5, self.image(Fl_PNG_Image(os.path.join(self.spritedir, "alloff.png"))))
+        Fl.repeat_timeout(0.5, self.tempfunc)
         
-        
+    def tempfunc(self):
+        self.image(Fl_PNG_Image(os.path.join(self.spritedir, "alloff.png")).copy(self.rad*2, self.rad*2))
 
     
 
