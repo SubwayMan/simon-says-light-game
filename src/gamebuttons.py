@@ -23,6 +23,7 @@ class Simon_Button(Fl_Button):
         self.callback(self.click_cb)
         self.rad = rad
 
+ 
     def click_cb(self, n):
 
         mx, my = Fl.event_x(), Fl.event_y()
@@ -61,11 +62,14 @@ class Simon_Button(Fl_Button):
 
         self.sprite = Fl_PNG_Image(os.path.join(glob["SPRITEDIR"], pic))
         self.image(self.sprite.copy(self.rad*2, self.rad*2))
-        self.redraw()
-        Fl.add_timeout(0.3, self.image, Fl_PNG_Image(os.path.join(glob["SPRITEDIR"], "alloff.png")).copy(self.rad*2, self.rad*2))
+        self.parent().redraw()
         
-    
-    
+        Fl.add_timeout(0.3, self.off)
+        
+    def off(self):
+        self.image(Fl_PNG_Image(os.path.join(glob["SPRITEDIR"], "alloff.png")).copy(self.rad*2, self.rad*2))
+        self.parent().redraw()
+
 class redbutton(Fl_Button):
 
     def __init__(self, x, y, w, h, cb):

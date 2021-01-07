@@ -18,8 +18,8 @@ class Main(Fl_Double_Window):
         self.censpr = Fl_PNG_Image(os.path.join(glob["SPRITEDIR"], "center.png"))
         self.center.image(self.censpr.copy(self.center.w(), self.center.h()))
 
-        self.startbut = redbutton((w//2)-25, 200, 50, 20, self.addseq)
-        self.tempbut = redbutton((w//2)-25, 250, 50, 20, self.playseq)
+        self.startbut = redbutton((w//2)-28, 200, 50, 20, self.addseq)
+        self.tempbut = redbutton((w//2)-28, 250, 50, 20, self.playseq)
 
         
         self.end()
@@ -34,7 +34,7 @@ class Main(Fl_Double_Window):
         self.plate.deactivate()
         for i in range(len(self.seq)):
             Fl.repeat_timeout(0.5*i, self.plate.chcol, self.seq[i])
-
+            Fl.repeat_timeout((0.5*i)+0.3, self.plate.off)
         Fl.repeat_timeout(0.5*len(self.seq), self.plate.activate)
 
 win = Main(500, 500)
