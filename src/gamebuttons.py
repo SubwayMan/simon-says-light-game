@@ -2,6 +2,11 @@ from fltk import *
 import os
 import math
 import random
+from enum import Enum
+
+glob = {
+    "SPRITEDIR": os.path.join(os.getcwd(), "..", "assets")
+    }
 
 class Simon_Button(Fl_Button):
 
@@ -9,10 +14,10 @@ class Simon_Button(Fl_Button):
 
         self.rad = rad
         Fl_Button.__init__(self, x, y, rad*2, rad*2)
-        self.spritedir = os.path.join(os.getcwd(), "..", "assets")
+    #    self.spritedir = os.path.join(os.getcwd(), "..", "assets")
         self.box(FL_NO_BOX)
         self.down_box(FL_NO_BOX)
-        self.sprite = Fl_PNG_Image(os.path.join(self.spritedir, "alloff.png"))
+        self.sprite = Fl_PNG_Image(os.path.join(glob["SPRITEDIR"], "alloff.png"))
         self.image(self.sprite.copy(rad*2, rad*2))
         
         self.callback(self.click_cb)
@@ -41,7 +46,7 @@ class Simon_Button(Fl_Button):
             return None
         
         self.deactivate()
-        Fl.repeat_timeout(0.5, self.activate)
+        Fl.repeat_timeout(0.3, self.activate)
         
     def chcol(self, c):
         
@@ -54,21 +59,25 @@ class Simon_Button(Fl_Button):
         elif c == "G":
             pic = "greenlight.png"
 
-        self.sprite = Fl_PNG_Image(os.path.join(self.spritedir, pic))
+        self.sprite = Fl_PNG_Image(os.path.join(glob["SPRITEDIR"], pic))
         self.image(self.sprite.copy(self.rad*2, self.rad*2))
         self.redraw()
-        Fl.repeat_timeout(0.5, self.tempfunc)
+        Fl.add_timeout(0.3, self.image, Fl_PNG_Image(os.path.join(glob["SPRITEDIR"], "alloff.png")).copy(self.rad*2, self.rad*2))
         
-    def tempfunc(self):
-        self.image(Fl_PNG_Image(os.path.join(self.spritedir, "alloff.png")).copy(self.rad*2, self.rad*2))
-
+    
     
 class redbutton(Fl_Button):
 
     def __init__(self, x, y, w, h, cb):
        
         Fl_Button.__init__(self, x, y, w, h)
+        self.sprite = Fl_PNG_Image(os.path.join(glob["SPRITEDIR"], "button.png"))
+        self.box(FL_NO_BOX)
+        self.callback(cb)
+        self.image(self.sprite.copy(self.w(), self.h()))
 
+      
+        
 if __name__ == "__main__":
 
     win = Fl_Double_Window(500, 500, "buttontest")

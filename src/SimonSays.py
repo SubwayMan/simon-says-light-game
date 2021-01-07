@@ -1,4 +1,4 @@
-from gamebuttons import Simon_Button
+from gamebuttons import *
 from fltk import *
 import os
 import random
@@ -14,24 +14,26 @@ class Main(Fl_Double_Window):
         self.plate = Simon_Button(0, 0, 250)
         self.center = Fl_Box(170, 170, 155, 155)
         self.center.box(FL_NO_BOX)
-        self.startbut = Fl_Button((w//2)-25, 200, 50, 20)
-        self.startbut.box(FL_NO_BOX)
-        self.butbaseimg = Fl_PNG_Image(os.path.join(self.spdir, "button.png"))
-        self.startbut.image(self.butbaseimg.copy(self.startbut.w(), self.startbut.h()))
         
-        self.censpr = Fl_PNG_Image(os.path.join(self.spdir, "center.png"))
+        self.censpr = Fl_PNG_Image(os.path.join(glob["SPRITEDIR"], "center.png"))
         self.center.image(self.censpr.copy(self.center.w(), self.center.h()))
+
+        self.startbut = redbutton((w//2)-25, 200, 50, 20, self.addseq)
+        self.tempbut = redbutton((w//2)-25, 250, 50, 20, self.playseq)
+
+        
         self.end()
         self.show()
         
-    def addseq(self):
+    def addseq(self, w):
         self.seq += random.choice("RGBY")
-    
-    def playseq(self):
+        print(self.seq)
+
+    def playseq(self, w):
 
         self.plate.deactivate()
         for i in range(len(self.seq)):
-            Fl.repeat_timeout(0.5*i, self.plate.chcol(self.seq[i]))
+            Fl.repeat_timeout(0.5*i, self.plate.chcol, self.seq[i])
 
         Fl.repeat_timeout(0.5*len(self.seq), self.plate.activate)
 
