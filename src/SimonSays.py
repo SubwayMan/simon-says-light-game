@@ -19,8 +19,8 @@ class Main(Fl_Double_Window):
         self.center.image(self.censpr.copy(self.center.w(), self.center.h()))
 
         self.startbut = redbutton((w//2)-33, 190, 60, 24, self.addseq, "play.png")
-        self.tempbut = redbutton((w//2)-33, 285, 60, 24, self.playseq, "leaderboard.png")
-
+        self.tempbut = redbutton((w//2)-33, 285, 60, 24, self.leaderboard, "leaderboard.png")
+        self.ch = 0
         
         self.end()
         self.show()
@@ -29,7 +29,7 @@ class Main(Fl_Double_Window):
         self.seq += random.choice("RGBY")
         print(self.seq)
 
-    def playseq(self, w):
+    def playseq(self):
 
         self.plate.deactivate()
         for i in range(len(self.seq)):
@@ -39,6 +39,16 @@ class Main(Fl_Double_Window):
 
     def newgame(self, w):
         self.seq = ""
+        self.plate.off()
+
+    def leaderboard(self, w):
+        pass
+
+    def newgame(self, w):
+
+        self.ch = 0
+        self.plate.activate()
+
 
 win = Main(500, 500)
 Fl.run()
