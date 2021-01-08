@@ -72,13 +72,18 @@ class Simon_Button(Fl_Button):
 
 class redbutton(Fl_Button):
 
-    def __init__(self, x, y, w, h, cb):
+    def __init__(self, x, y, w, h, cb, label):
        
         Fl_Button.__init__(self, x, y, w, h)
         self.sprite = Fl_PNG_Image(os.path.join(glob["SPRITEDIR"], "button.png"))
+        self.lsprite = Fl_PNG_Image(os.path.join(glob["SPRITEDIR"], label))
+
         self.box(FL_NO_BOX)
         self.callback(cb)
         self.image(self.sprite.copy(self.w(), self.h()))
+
+        self.labelbox = Fl_Box(x+((w//2)-(h//2)), y, h, h)
+        self.labelbox.image(self.lsprite.copy(h, h))
 
       
         
