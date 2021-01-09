@@ -28,7 +28,7 @@ class Simon_Button(Fl_Button):
             "G": "sound3.wav",
             "R": "sound4.wav"}
         self.clickval = None
-
+        self.keyshort = dict((ord(a), b) for a, b in zip("qwsa", "GRBY"))
  
     def handle(self, e):
         r = super().handle(e)
@@ -41,7 +41,22 @@ class Simon_Button(Fl_Button):
                 self.clickval = id
             
                 return 1
+
+        if e == FL_KEYUP:
+            self.do_callback()
+            return 1
+
+          
+        for k in self.keyshort:
+            if Fl.get_key(k):
+                id = self.keyshort[k]
+                self.chcol(id)
+                self.clickval = id
+                return 1
+            
         return r
+
+        
     
     def mcheck(self) -> str:
         mx, my = Fl.event_x(), Fl.event_y()
