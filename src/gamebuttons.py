@@ -103,6 +103,7 @@ class Simon_Button(Fl_Button):
         if sflag:
             pygame.mixer.music.load(os.path.join(glob["SPRITEDIR"], "failure.wav"))
             pygame.mixer.music.play(-1)
+
 class redbutton(Fl_Button):
 
     def __init__(self, x, y, w, h, cb, label):
@@ -118,7 +119,11 @@ class redbutton(Fl_Button):
         self.labelbox = Fl_Box(x+((w//2)-(h//2)), y, h, h)
         self.labelbox.image(self.lsprite.copy(h, h))
 
-      
+class scoredisplay(Fl_Pack):
+
+    def __init__(self, x, y, w, h):
+        super.__init__(self, x, y, w, h)
+
         
 if __name__ == "__main__":
 

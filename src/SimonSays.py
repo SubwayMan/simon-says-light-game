@@ -47,8 +47,11 @@ class Main(Fl_Double_Window):
         self.score = 0
         self.plate.deactivate()
         self.plate.endflash(sec, t)
+        pygame.mixer.music.stop()
         Fl.remove_timeout(self.stop)
         Fl.remove_timeout(self.turn)
+        Fl.remove_timeout(self.plate.chcol)
+        Fl.remove_timeout(self.plate.off)
 
     def leaderboard(self, w):
         pass
