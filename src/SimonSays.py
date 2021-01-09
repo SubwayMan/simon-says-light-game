@@ -25,6 +25,11 @@ class Main(Fl_Double_Window):
         self.startbut = redbutton((w//2)-33, 190, 60, 24, self.play_cb, "play.png")
         self.lbbut = redbutton((w//2)-33, 285, 60, 24, self.leaderboard, "leaderboard.png")
         
+        self.wborder = Fl_Box((w//2)-47, 223, 89, 54)
+        self.wborder.box(FL_FLAT_BOX)
+        self.wborder.color(FL_WHITE)
+        self.scoredisp = scoredisplay((w//2)-45, 225, 85, 50)
+        self.scoredisp.val(0)
         self.plate.deactivate()
         self.end()
         self.show()
@@ -45,25 +50,28 @@ class Main(Fl_Double_Window):
     def stop(self, sec=2.0, t=True):
         self.seq = ""
         self.score = 0
+        Fl.remove_timeout(self.plate.off)
         self.plate.deactivate()
-        self.plate.endflash(sec, t)
         pygame.mixer.music.stop()
+        self.plate.endflash(sec, t)
+        
         Fl.remove_timeout(self.stop)
         Fl.remove_timeout(self.turn)
         Fl.remove_timeout(self.plate.chcol)
-        Fl.remove_timeout(self.plate.off)
 
     def leaderboard(self, w):
         pass
 
     def play_cb(self, w):
+
+        self.scoredisp.val(self.score)
         self.plate.activate()
         self.stop(0.5, False)
         Fl.repeat_timeout(2.0, self.turn)
+        self.scoredisp.val(0)
 
     def turn(self):
 
-        self.score += 1
         self.current = 0
         self.addseq()
         self.playseq()
@@ -71,7 +79,7 @@ class Main(Fl_Double_Window):
  
 
     def signal(self, s):
-
+        print(s)
         if s != self.seq[self.current]:
             Fl.remove_timeout(self.stop)
             self.stop()
@@ -80,6 +88,7 @@ class Main(Fl_Double_Window):
         Fl.remove_timeout(self.stop)
         Fl.repeat_timeout(5.0, self.stop)      
         self.score += 1
+        self.scoredisp.val(self.score)
         self.current += 1
 
         if self.current == len(self.seq):

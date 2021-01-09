@@ -122,8 +122,24 @@ class redbutton(Fl_Button):
 class scoredisplay(Fl_Pack):
 
     def __init__(self, x, y, w, h):
-        super.__init__(self, x, y, w, h)
+        Fl_Pack.__init__(self, x, y, w, h)
+        self.type(1)
+        self.begin()
+        self.nums = []
+        for i in range(3):
+            digit = Fl_Box(i*(w//3), 0, w//3, h)
+            digit.box(FL_FLAT_BOX)
+            digit.color(random.choice([FL_RED, FL_BLUE, FL_WHITE]))
+            self.nums.append(digit)
+        self.end()
 
+    def val(self, n):
+
+        n = min(999, n)
+        for d, space in zip(str(n).zfill(3), self.nums):
+            im = Fl_PNG_Image(os.path.join(glob["SPRITEDIR"], (d+".png")))
+            space.image(im.copy(space.w(), space.h()))
+        self.redraw()
         
 if __name__ == "__main__":
 
