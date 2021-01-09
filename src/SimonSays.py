@@ -154,6 +154,6 @@ class Main(Fl_Double_Window):
             #schedule next turn
             Fl.repeat_timeout(1.0, self.turn)
 
-
+#Running the program
 win = Main(500, 500)
 Fl.run()
