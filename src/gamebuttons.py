@@ -96,11 +96,13 @@ class Simon_Button(Fl_Button):
         pygame.mixer.music.stop()
        
 
-    def endflash(self):
+    def endflash(self, t, sflag):
         self.image(Fl_PNG_Image(os.path.join(glob["SPRITEDIR"], "allon.png")).copy(self.rad*2, self.rad*2))
         self.parent().redraw()
-        Fl.repeat_timeout(0.5, self.off)
-
+        Fl.repeat_timeout(t, self.off)
+        if sflag:
+            pygame.mixer.music.load(os.path.join(glob["SPRITEDIR"], "failure.wav"))
+            pygame.mixer.music.play(-1)
 class redbutton(Fl_Button):
 
     def __init__(self, x, y, w, h, cb, label):

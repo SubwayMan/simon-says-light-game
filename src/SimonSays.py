@@ -41,11 +41,12 @@ class Main(Fl_Double_Window):
             Fl.repeat_timeout((0.7*i)+0.5, self.plate.off)
         Fl.repeat_timeout(0.7*len(self.seq), self.plate.activate)
         Fl.repeat_timeout((0.7*len(self.seq))+5.0, self.stop)
-    def stop(self):
+
+    def stop(self, sec=2.0, t=True):
         self.seq = ""
         self.score = 0
         self.plate.deactivate()
-        self.plate.endflash()
+        self.plate.endflash(sec, t)
         Fl.remove_timeout(self.stop)
         Fl.remove_timeout(self.turn)
 
@@ -54,7 +55,7 @@ class Main(Fl_Double_Window):
 
     def play_cb(self, w):
         self.plate.activate()
-        self.stop()
+        self.stop(0.5, False)
         Fl.repeat_timeout(2.0, self.turn)
 
     def turn(self):
@@ -75,7 +76,7 @@ class Main(Fl_Double_Window):
 
         Fl.remove_timeout(self.stop)
         Fl.repeat_timeout(5.0, self.stop)      
-        
+        self.score += 1
         self.current += 1
 
         if self.current == len(self.seq):
