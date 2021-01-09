@@ -10,45 +10,62 @@ glob = {
 
 class Simon_Button(Fl_Button):
 
-    def __init__(self, x, y, rad):
+    def __init__(self, x, y, rad, sfunc):
 
         self.rad = rad
         Fl_Button.__init__(self, x, y, rad*2, rad*2)
     #    self.spritedir = os.path.join(os.getcwd(), "..", "assets")
         self.box(FL_NO_BOX)
         self.down_box(FL_NO_BOX)
+        self.sfunc = sfunc
         self.sprite = Fl_PNG_Image(os.path.join(glob["SPRITEDIR"], "alloff.png"))
         self.image(self.sprite.copy(rad*2, rad*2))
-        
         self.callback(self.click_cb)
         self.rad = rad
+        self.clickval = None
 
  
-    def click_cb(self, n):
+    def handle(self, e):
+        r = super().handle(e)
 
+        if e == FL_RELEASE:
+            if self.clickval:
+                self.off()
+                self.sfunc(self.clickval)
+                self.clickval = None
+            return 1
+        return r
+    
+    def mcheck(self) -> str:
         mx, my = Fl.event_x(), Fl.event_y()
         cx = mx - self.rad
         cy = my - self.rad
         crad = math.pi * math.pow(self.rad, 2)
         mdist = math.pow(cx, 2) + math.pow(cy, 2)
 
+
         if not 87 <= math.sqrt(mdist) < self.rad-30:
             return None
-
         if mx < self.rad-10 and my < self.rad-10:
-            self.chcol("G")
+            return "G"
         elif mx > self.rad+10 and my < self.rad-10:
-            self.chcol("R")
+            return "R"
         elif mx > self.rad+10 and my > self.rad+10:
-            self.chcol("B")
+            return "B"
         elif mx < self.rad-10 and my > self.rad+10:
-            self.chcol("Y")
+            return "Y"
         else:
             return None
-        
-        self.deactivate()
-        Fl.repeat_timeout(0.3, self.activate)
-        
+
+
+    def click_cb(self, w):
+        ch = self.mcheck()
+        if not ch:
+            return None
+
+        self.chcol(ch)
+        self.clickval = ch
+
     def chcol(self, c):
         
         if c == "R":
@@ -59,16 +76,21 @@ class Simon_Button(Fl_Button):
             pic = "yellight.png"
         elif c == "G":
             pic = "greenlight.png"
-
+        else:
+            return None
         self.sprite = Fl_PNG_Image(os.path.join(glob["SPRITEDIR"], pic))
         self.image(self.sprite.copy(self.rad*2, self.rad*2))
         self.parent().redraw()
-        
-        Fl.add_timeout(0.3, self.off)
+       
         
     def off(self):
         self.image(Fl_PNG_Image(os.path.join(glob["SPRITEDIR"], "alloff.png")).copy(self.rad*2, self.rad*2))
         self.parent().redraw()
+
+    def endflash(self):
+        self.image(Fl_PNG_Image(os.path.join(glob["SPRITEDIR"], "allon.png")).copy(self.rad*2, self.rad*2))
+        self.parent().redraw()
+        Fl.repeat_timeout(0.5, self.off)
 
 class redbutton(Fl_Button):
 
