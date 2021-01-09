@@ -3,28 +3,38 @@ from fltk import *
 import os
 import random
 
+#Please read the README.md. Unfortunately reading raw markdown is not always pleasant. :/ 
 class Main(Fl_Double_Window):
+    """The main class that handles main framework of program."""
 
     def __init__(self, w, h):
-        
+        """Initialize"""
+
         Fl_Double_Window.__init__(self, w, h, "Simon Says")
+        #current colorsequence, score, colorsequence index
         self.seq = ""
-        self.spdir = os.path.join(os.getcwd(), "..", "assets")
         self.score = 0
         self.current = 0
 
         self.begin()
+        #background
+        self.bg = Fl_Box(0, 0, w, h)
+        self.bg.box(FL_FLAT_BOX)
+        self.bg.color(FL_DARK2)
+        #buttons and game center 
         self.plate = Simon_Button(0, 0, 250, self.signal)
-        self.add(self.plate)
         self.center = Fl_Box(170, 170, 155, 155)
         self.center.box(FL_NO_BOX)
         
+        #set the sprite for the middle
         self.censpr = Fl_PNG_Image(os.path.join(glob["SPRITEDIR"], "center.png"))
         self.center.image(self.censpr.copy(self.center.w(), self.center.h()))
 
+        #create red buttons
         self.startbut = redbutton((w//2)-33, 190, 60, 24, self.play_cb, "play.png")
         self.lbbut = redbutton((w//2)-33, 285, 60, 24, self.leaderboard, "leaderboard.png")
         
+        #draw a white border around the display
         self.wborder = Fl_Box((w//2)-47, 223, 89, 54)
         self.wborder.box(FL_FLAT_BOX)
         self.wborder.color(FL_WHITE)
