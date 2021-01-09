@@ -48,8 +48,21 @@ class Main(Fl_Double_Window):
         Fl.repeat_timeout((0.7*len(self.seq))+5.0, self.stop)
 
     def stop(self, sec=2.0, t=True):
+
+        if t:
+            f = open("data.txt", "r").read()
+            dat = f.split(":")
+            if int(dat[1]) < self.score:
+                pl = fl_input("New highscore!", "Your Name Here")
+                f = open("data.txt", "w")
+                f.write(pl+":"+str(self.score))
+
+            self.lbbut.activate()
+
         self.seq = ""
         self.score = 0
+        
+        
         Fl.remove_timeout(self.plate.off)
         self.plate.deactivate()
         pygame.mixer.music.stop()
@@ -60,10 +73,12 @@ class Main(Fl_Double_Window):
         Fl.remove_timeout(self.plate.chcol)
 
     def leaderboard(self, w):
-        pass
+        f = open("data.txt", "r").read().strip().split(":")[1]
+        self.scoredisp.val(int(f))     
 
     def play_cb(self, w):
 
+        self.lbbut.deactivate()
         self.scoredisp.val(self.score)
         self.plate.activate()
         self.stop(0.5, False)

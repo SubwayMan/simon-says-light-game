@@ -3,72 +3,88 @@ import os
 import math
 import random
 import pygame
+#global variable to yank from assets directory
 glob = {
     "SPRITEDIR": os.path.join(os.getcwd(), "..", "assets")
     }
 
 class Simon_Button(Fl_Button):
+    """The button class. Handles its own event parsing and sound 
+    handling and sends information to the main class."""
 
-    def __init__(self, x, y, rad, sfunc):
-
+    def __init__(self, x, y, rad, sfunc) -> None:
+        """Initialize object"""
+        #Due to circular nature, takes radius argument to construct self.
         self.rad = rad
         Fl_Button.__init__(self, x, y, rad*2, rad*2)
-    #    self.spritedir = os.path.join(os.getcwd(), "..", "assets")
+        #Transparent edges
         self.box(FL_NO_BOX)
-        self.down_box(FL_NO_BOX)
+        #receives listener function from main
         self.sfunc = sfunc
+        #sprite handling
         self.sprite = Fl_PNG_Image(os.path.join(glob["SPRITEDIR"], "alloff.png"))
         self.image(self.sprite.copy(rad*2, rad*2))
+        #set callback
         self.callback(self.b_cb)
-        self.rad = rad
+        #initialize music
         pygame.mixer.init()
+        #maps button return values to specific files
         self.col_to_mp3 = {
             "B": "sound1.wav",
             "Y": "sound2.wav",
             "G": "sound3.wav",
             "R": "sound4.wav"}
+        #stores current color
         self.clickval = None
+        #dictionary that maps key ascii to color characters
         self.keyshort = dict((ord(a), b) for a, b in zip("qwsa", "GRBY"))
  
-    def handle(self, e):
+    def handle(self, e) -> int:
+        """Event handler that registers push 
+        events and keyboard shortcuts."""
         r = super().handle(e)
-
+        #button press
         if e == FL_PUSH:
+            #check hitboxes
             id = self.mcheck()
+            #runs if check successful
             if id:
-                
+                #color change, store color
                 self.chcol(id)
                 self.clickval = id
-            
                 return 1
-
+        #check key release events
         if e == FL_KEYUP:
+            #key release function would do same thing as mouse release, so link to callback for simplicity
             self.do_callback()
             return 1
-
-          
+        #check if any of the shortcut keys are currently held
         for k in self.keyshort:
             if Fl.get_key(k):
+                #color change and store color
                 id = self.keyshort[k]
                 self.chcol(id)
                 self.clickval = id
                 return 1
-            
-        return r
-
-        
+        return r        
     
     def mcheck(self) -> str:
+        """This is the function that manages the 
+        button hitboxes. TL;DR: Math here."""
+        #get mouse position and store distance from origin point
         mx, my = Fl.event_x(), Fl.event_y()
         cx = mx - self.rad
         cy = my - self.rad
-        crad = math.pi * math.pow(self.rad, 2)
+
+        #pythag to get absolute distance
         mdist = math.pow(cx, 2) + math.pow(cy, 2)
 
-
+        #check bounds for distance from origin to create donut-shaped hitbox
         if not 87 <= math.sqrt(mdist) < self.rad-30:
             return None
+        #overlay square hitboxes on top for each individual subbutton
         if mx < self.rad-10 and my < self.rad-10:
+            #convention here is to return the color character
             return "G"
         elif mx > self.rad+10 and my < self.rad-10:
             return "R"
@@ -77,10 +93,12 @@ class Simon_Button(Fl_Button):
         elif mx < self.rad-10 and my > self.rad+10:
             return "Y"
         else:
+            #this is basically the black strip in between each button, which we don't want
             return None
 
 
-    def b_cb(self, w):
+    def b_cb(self, w) -> None:
+        """Button/key release callback. Responsible for sending stored value to event listener."""
         if self.clickval:
                 self.off()
                 self.sfunc(self.clickval)
