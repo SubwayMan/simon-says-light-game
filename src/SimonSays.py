@@ -2,6 +2,7 @@ from gamebuttons import *
 from fltk import *
 import os
 import random
+
 class Main(Fl_Double_Window):
 
     def __init__(self, w, h):
@@ -30,16 +31,16 @@ class Main(Fl_Double_Window):
         
     def addseq(self):
         self.seq += random.choice("RGBY")
-        print(self.seq)
 
     def playseq(self):
 
+        self.current = 0
         self.plate.deactivate()
         for i in range(len(self.seq)):
-            Fl.repeat_timeout(0.5*i, self.plate.chcol, self.seq[i])
-            Fl.repeat_timeout((0.5*i)+0.3, self.plate.off)
-        Fl.repeat_timeout(0.5*len(self.seq), self.plate.activate)
-
+            Fl.repeat_timeout(0.7*i, self.plate.chcol, self.seq[i])
+            Fl.repeat_timeout((0.7*i)+0.5, self.plate.off)
+        Fl.repeat_timeout(0.7*len(self.seq), self.plate.activate)
+        Fl.repeat_timeout((0.7*len(self.seq))+5.0, self.stop)
     def stop(self):
         self.seq = ""
         self.score = 0
@@ -59,23 +60,29 @@ class Main(Fl_Double_Window):
     def turn(self):
 
         self.score += 1
+        self.current = 0
         self.addseq()
         self.playseq()
-        Fl.repeat_timeout(5.0, self.stop)
+        
  
 
     def signal(self, s):
 
         if s != self.seq[self.current]:
-            self.stop()
             Fl.remove_timeout(self.stop)
+            self.stop()
+            return None
+
+        Fl.remove_timeout(self.stop)
+        Fl.repeat_timeout(5.0, self.stop)      
+        
         self.current += 1
+
         if self.current == len(self.seq):
+            self.plate.deactivate()
             Fl.remove_timeout(self.stop)
             Fl.repeat_timeout(1.0, self.turn)
             self.current = 0
-        else:
-            Fl.repeat_timeout(5.0, self.stop)
 
 
 win = Main(500, 500)

@@ -2,8 +2,7 @@ from fltk import *
 import os
 import math
 import random
-from enum import Enum
-
+import pygame
 glob = {
     "SPRITEDIR": os.path.join(os.getcwd(), "..", "assets")
     }
@@ -20,20 +19,28 @@ class Simon_Button(Fl_Button):
         self.sfunc = sfunc
         self.sprite = Fl_PNG_Image(os.path.join(glob["SPRITEDIR"], "alloff.png"))
         self.image(self.sprite.copy(rad*2, rad*2))
-        self.callback(self.click_cb)
+        self.callback(self.b_cb)
         self.rad = rad
+        pygame.mixer.init()
+        self.col_to_mp3 = {
+            "B": "sound1.wav",
+            "Y": "sound2.wav",
+            "G": "sound3.wav",
+            "R": "sound4.wav"}
         self.clickval = None
 
  
     def handle(self, e):
         r = super().handle(e)
 
-        if e == FL_RELEASE:
-            if self.clickval:
-                self.off()
-                self.sfunc(self.clickval)
-                self.clickval = None
-            return 1
+        if e == FL_PUSH:
+            id = self.mcheck()
+            if id:
+                
+                self.chcol(id)
+                self.clickval = id
+            
+                return 1
         return r
     
     def mcheck(self) -> str:
@@ -58,16 +65,14 @@ class Simon_Button(Fl_Button):
             return None
 
 
-    def click_cb(self, w):
-        ch = self.mcheck()
-        if not ch:
-            return None
-
-        self.chcol(ch)
-        self.clickval = ch
+    def b_cb(self, w):
+        if self.clickval:
+                self.off()
+                self.sfunc(self.clickval)
+                self.clickval = None
 
     def chcol(self, c):
-        
+
         if c == "R":
             pic = "redlight.png"
         elif c == "B":
@@ -78,14 +83,18 @@ class Simon_Button(Fl_Button):
             pic = "greenlight.png"
         else:
             return None
+        pygame.mixer.music.load(os.path.join(glob["SPRITEDIR"], self.col_to_mp3[c]))
+        pygame.mixer.music.play(-1)
         self.sprite = Fl_PNG_Image(os.path.join(glob["SPRITEDIR"], pic))
         self.image(self.sprite.copy(self.rad*2, self.rad*2))
         self.parent().redraw()
-       
         
     def off(self):
+
         self.image(Fl_PNG_Image(os.path.join(glob["SPRITEDIR"], "alloff.png")).copy(self.rad*2, self.rad*2))
         self.parent().redraw()
+        pygame.mixer.music.stop()
+       
 
     def endflash(self):
         self.image(Fl_PNG_Image(os.path.join(glob["SPRITEDIR"], "allon.png")).copy(self.rad*2, self.rad*2))
